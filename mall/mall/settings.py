@@ -208,3 +208,10 @@ REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'utils.exception.exception_handler',
 }
+
+# 替换系统的User,让系统的User也使用我们的模型类
+# key=value
+# value的形式为: 子应用名.模型类名
+# 只能有一个 .
+AUTH_USER_MODEL = 'users.User'
+
