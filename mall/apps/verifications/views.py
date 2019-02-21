@@ -36,7 +36,7 @@ from verifications.constants import SMSIMAGE_EXPIRE_TIME
 from libs.captcha.captcha import captcha
 from django_redis import get_redis_connection
 
-class RegisterSmsCodeAPIView(APIView):
+class RegisterImageCodeAPIView(APIView):
 
     def get(self,request,image_code_id):
         # 1.后端接收uuid
@@ -58,3 +58,57 @@ class RegisterSmsCodeAPIView(APIView):
         # 错误的
         # return HttpResponse(image)
         # return Response(image,content_type='image/jpeg')
+
+"""
+一.分析需求(你要干什么)
+    当用户点击获取短信验证码的时候,前端应该发送ajax请求,将
+    手机号,图片验证码的内容,以及uuid 传递给后端
+
+二.步骤(大概的思路 你怎么干 前端给你什么,你给前端什么)
+    1.后端接收数据
+    2.校验数据 (数据格式,数据的内容[图片验证码是否正确])
+    3.生成一个短信码
+    4.发送短信
+    5.保存短信
+    6.返回相应
+三.确定请求方式和路由
+    verifications/smscodes/mobile/text/image_code_id/
+
+    verifications/smscodes/?mobile=xxx&text=xxxx&image_code_id=xxxx
+
+    GET   verifications/smscodes/(?P<mobile>1[3-9]\d{9})/?text=xxxx&image_code_id=xxx
+
+    POST  verifications/smscodes/   body
+
+四.选取哪个视图(结合需求,使用排除法)
+    APIView                         :基类
+    GenericAPIView                  :对列表视图和详情视图做了通用支持,一般和mixin配合使用
+    ListAPIView,RetrieveAPIView     : 连http请求方法都不用写
+
+五.编码
+
+"""
+from verifications.serializers import RegisterSmsCodeSerializer
+class RegisterSmsCodeAPIView(APIView):
+    """
+     GET   verifications/smscodes/(?P<mobile>1[3-9]\d{9})/?text=xxxx&image_code_id=xxx
+    """
+    def get(self,request,mobile):
+        # 1.后端接收数据
+        query_params = request.query_params
+
+        # 2.校验数据 (数据格式,数据的内容[图片验证码是否正确])
+        # text = query_params.get('text')
+        # image_code_id=query_params.get('image_code_id')
+
+        serializer = RegisterSmsCodeSerializer(data=query_params)
+        serializer.is_valid(raise_exception=True)
+
+        # 3.生成一个短信码
+        # 4.发送短信
+        # 5.保存短信
+        # 6.返回相应
+
+        pass
+
+
