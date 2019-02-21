@@ -5,6 +5,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from libs.yuntongxun.sms import CCP
 from verifications.constants import SMSIMAGE_EXPIRE_TIME
 
 """
@@ -105,10 +106,17 @@ class RegisterSmsCodeAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         # 3.生成一个短信码
+        import random
+        sms_code = '%06d'%random.randint(0,999999)
         # 4.发送短信
+        CCP().send_template_sms(mobile,[sms_code,5],1)
         # 5.保存短信
-        # 6.返回相应
+        redis_conn = get_redis_connection('code')
 
-        pass
+        # redis_conn.setex(key,expire,value)
+        redis_conn.setex('sms_%s'%mobile,5*60,sms_code)
+        # 6.返回相应
+        return Response({'msg':'ok'})
+
 
 
