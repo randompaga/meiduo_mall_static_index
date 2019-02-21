@@ -113,6 +113,8 @@ class RegisterSmsCodeAPIView(APIView):
 
         from celery_tasks.sms.tasks import send_sms_code
 
+        # send_sms_code(mobile,sms_code)  错误的
+        # delay 的参数 同前边函数的参数
         send_sms_code.delay(mobile,sms_code)
 
         # 5.保存短信
