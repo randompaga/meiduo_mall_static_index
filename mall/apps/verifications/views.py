@@ -109,7 +109,12 @@ class RegisterSmsCodeAPIView(APIView):
         import random
         sms_code = '%06d'%random.randint(0,999999)
         # 4.发送短信
-        CCP().send_template_sms(mobile,[sms_code,5],1)
+        # CCP().send_template_sms(mobile,[sms_code,5],1)
+
+        from celery_tasks.sms.tasks import send_sms_code
+
+        send_sms_code.delay(mobile,sms_code)
+
         # 5.保存短信
         redis_conn = get_redis_connection('code')
 
