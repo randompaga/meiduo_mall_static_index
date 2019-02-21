@@ -57,7 +57,8 @@ class RegisterUsernameAPIView(APIView):
         count = User.objects.filter(username=username).count()
 
         data = {
-            'count':count
+            'count':count,
+            'username':username
         }
 
         # 4. 返回相应
