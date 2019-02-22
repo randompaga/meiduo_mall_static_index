@@ -125,5 +125,3 @@ class RegisterUserAPIView(CreateAPIView):
     serializer_class = RegisterUserSerializer
 
 
-
-
