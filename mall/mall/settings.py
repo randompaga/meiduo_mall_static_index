@@ -248,3 +248,11 @@ REST_FRAMEWORK = {
 # 只能有一个 .
 AUTH_USER_MODEL = 'users.User'
 
+
+# JWT
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+    #'rest_framework_jwt.utils.jwt_response_payload_handler',
+        'utils.users.jwt_response_payload_handler'
+}
+
