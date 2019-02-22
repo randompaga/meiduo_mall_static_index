@@ -232,6 +232,14 @@ LOGGING = {
 REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'utils.exception.exception_handler',
+
+    #JWT
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 优先采用 JWT认证
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
 
 # 替换系统的User,让系统的User也使用我们的模型类
