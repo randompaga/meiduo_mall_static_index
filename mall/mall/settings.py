@@ -26,14 +26,20 @@ SECRET_KEY = 'c*xu*gd8hdpa$8m2u#kcu3y(_e-i&ea#&m^6@7z-fys1e!y1!m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# 我们家 有大门,有后门,还有窗口
+# 默认只允许 大门进入    ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = [ 大门,后门 ]
+
+#允许我们以什么 来访问后台,这个是一种安全机制
+ALLOWED_HOSTS = ['api.meiduo.site','127.0.0.1']
+
 
 # #跨域访问第三步,设置白名单, 白名单就是允许谁访问
 CORS_ORIGIN_WHITELIST  =  (
     '127.0.0.1:8080',
     'localhost:8080',
-
+    'www.meiduo.site:8080'
 )
 
 

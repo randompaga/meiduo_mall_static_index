@@ -1,6 +1,7 @@
 var vm = new Vue({
 	el: '#app',
 	data: {
+		host,
 		error_name: false,
 		error_password: false,
 		error_check_password: false,
@@ -48,7 +49,7 @@ var vm = new Vue({
 			this.image_code_id = this.generate_uuid();
 
 			// 设置页面中图片验证码img标签的src属性
-			this.image_code_url = 'http://127.0.0.1:8000' + "/verifications/imagecodes/" + this.image_code_id + "/";
+			this.image_code_url = this.host + "/verifications/imagecodes/" + this.image_code_id + "/";
 		},
 		check_username: function (){
 			var len = this.username.length;
