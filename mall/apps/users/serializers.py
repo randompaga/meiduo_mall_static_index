@@ -41,7 +41,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     def validate_mobile(self,value):
 
         #校验手机号
-        if not re.match(value,r'1[3-9]\d{9}'):
+        if not re.match(r'1[3-9]\d{9}',value):
             raise serializers.ValidationError('手机号不满足规则')
 
         return value
@@ -79,3 +79,14 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('短信验证码输入错误')
 
         return attrs
+
+
+    def create(self, validated_data):
+
+        del validated_data['sms_code']
+        del validated_data['allow']
+        del validated_data['password2']
+
+        user = User.objects.create(**validated_data)
+
+        return user
