@@ -99,6 +99,10 @@ class RegisterUserAPIView(APIView):
         # 3.数据入库
         serializer.save()
         # 4.返回相应
+        # serializer.data
+        # 当我们把模型赋值给序列化器之后, 调用序列化器的 序列化方法(serializer.data 将对象转换为字典)
+        # 原理是: 序列化器根据字段来获取模型中的数据
+
         return Response(serializer.data)
 
 

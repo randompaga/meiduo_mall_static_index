@@ -12,14 +12,41 @@ from users.models import User
 # 你课下写序列化器的时候 直接从我的笔记里 把代码赋值过来,不要按照我上课的思路自己写
 class RegisterUserSerializer(serializers.ModelSerializer):
 
-    password2=serializers.CharField(max_length=20,min_length=8,required=True,label='确认密码')
-    sms_code=serializers.CharField(max_length=6,min_length=6,required=True,label='短信验证码')
-    allow=serializers.CharField(required=True,label='是否同意协议')
+    password2=serializers.CharField(max_length=20,min_length=8,write_only=True,required=True,label='确认密码')
+    sms_code=serializers.CharField(max_length=6,min_length=6,write_only=True,required=True,label='短信验证码')
+    allow=serializers.CharField(required=True,write_only=True,label='是否同意协议')
+
+    # password
+
+    #write_only	表明该字段仅用于反序列化输入，默认False
+    # 在序列化的时候 默认 忽略
+
+    # 以上的三个字段 ,我们的期望只是在验证的时候 传入
+    # 我们在进行 序列化(对象转字典)操作的时候,忽略这3个字段('allow','password2','sms_code')
 
 
     class Meta:
         model = User
         fields = ['username','mobile','password','allow','password2','sms_code']
+        extra_kwargs = {
+            'username': {
+                'min_length': 5,
+                'max_length': 20,
+                'error_messages': {
+                    'min_length': '仅允许5-20个字符的用户名',
+                    'max_length': '仅允许5-20个字符的用户名',
+                }
+            },
+            'password': {
+                'write_only': True,
+                'min_length': 8,
+                'max_length': 20,
+                'error_messages': {
+                    'min_length': '仅允许8-20个字符的密码',
+                    'max_length': '仅允许8-20个字符的密码',
+                }
+            }
+        }
 
     """
     ModelSerializer 自动生成 字段的原理是:
