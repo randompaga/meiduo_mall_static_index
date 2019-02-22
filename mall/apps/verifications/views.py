@@ -120,6 +120,7 @@ class RegisterSmsCodeAPIView(APIView):
         # 3.生成一个短信码
         import random
         sms_code = '%06d'%random.randint(0,999999)
+
         # 4.发送短信
         # CCP().send_template_sms(mobile,[sms_code,5],1)
 

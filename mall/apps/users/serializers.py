@@ -1,3 +1,6 @@
+import re
+from django_redis import get_redis_connection
+
 from rest_framework import serializers
 from users.models import User
 # serializers.ModelSerializer
@@ -25,3 +28,54 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     如果没有,则去模型中查找,是否有一致对应的字段,有则生成,没有则报错
 
     """
+
+    """
+    验证数据:
+        1.字段类型
+        2.字段选项
+        3.单个字段
+        4.多个字段
+    """
+
+    #单个字段校验 手机号格式,是否同意协议
+    def validate_mobile(self,value):
+
+        #校验手机号
+        if not re.match(value,r'1[3-9]\d{9}'):
+            raise serializers.ValidationError('手机号不满足规则')
+
+        return value
+
+    def validate_allow(self,value):
+
+        if value != 'true':
+            raise serializers.ValidationError('您未同意协议')
+
+        return value
+    #多个字段校验 密码和确认密码,短信验证码
+    # def validate(self, data):
+    def validate(self, attrs):
+
+        #1.密码和确认密码
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
+        if password!=password2:
+            raise serializers.ValidationError('密码不一致')
+
+        # 2.短信验证码
+        # 2.1 用户提交的短信
+        sms_code = attrs.get('sms_code')
+        #2.2 获取redis的短信
+        #① 连接redis
+        redis_conn = get_redis_connection('code')
+        # ② 获取数据
+        mobile = attrs.get('mobile')
+        redis_code = redis_conn.get('sms_%s'%mobile)
+        # ③ 判断数据是否存在(有有效期)
+        if redis_code is None:
+            raise serializers.ValidationError('短信验证码已过期')
+        #2.3 比对
+        if redis_code.decode() != sms_code:
+            raise serializers.ValidationError('短信验证码输入错误')
+
+        return attrs
