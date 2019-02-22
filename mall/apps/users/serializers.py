@@ -88,5 +88,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         del validated_data['password2']
 
         user = User.objects.create(**validated_data)
+        # 修改密码
+        user.set_password(validated_data.get('password'))
+        # 修改完模型的数据之后,要记得保存模型
+        user.save()
 
         return user
