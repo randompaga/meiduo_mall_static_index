@@ -108,6 +108,7 @@ from users.serializers import RegisterUserSerializer
 #
 #         return Response(serializer.data)
 
+
 #############################二级视图##########################################
 # from rest_framework.mixins import CreateModelMixin
 # class RegisterUserAPIView(CreateModelMixin,GenericAPIView):
@@ -124,4 +125,33 @@ class RegisterUserAPIView(CreateAPIView):
 
     serializer_class = RegisterUserSerializer
 
+
+"""
+ 当用户注册完成之后,自动登陆
+
+ 当用户注册完成之后,跳转到登陆页面,让用户输入用户名和密码自己登陆
+
+
+"""
+
+"""
+
+"""
+
+"""
+一.分析需求
+    当用户注册完成之后,自动登陆
+
+    所谓的自动登陆是 当用户注册完成之后,我们生成一个token,将token返回给前端
+
+
+二.步骤(大概的思路)
+    # 1.用户注册完成之后
+    # 2.生成一个token
+    # 3.将token返回给前端
+
+三.确定请求方式和路由
+四.选取哪个视图(结合需求,使用排除法)
+五.编码
+"""
 

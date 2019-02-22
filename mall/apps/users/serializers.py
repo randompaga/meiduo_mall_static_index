@@ -16,6 +16,10 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     sms_code=serializers.CharField(max_length=6,min_length=6,write_only=True,required=True,label='短信验证码')
     allow=serializers.CharField(required=True,write_only=True,label='是否同意协议')
 
+    # token 是在序列化的时候 使用,在反序列化的时候 默认忽略
+    # token = serializers.CharField()
+
+    token = serializers.CharField(read_only=True)
     # password
 
     #write_only	表明该字段仅用于反序列化输入，默认False
@@ -27,7 +31,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username','mobile','password','allow','password2','sms_code']
+        fields = ['username','mobile','password','allow','token','password2','sms_code']
         extra_kwargs = {
             'username': {
                 'min_length': 5,
@@ -120,4 +124,38 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         # 修改完模型的数据之后,要记得保存模型
         user.save()
 
+        # 1.用户注册完成之后
+        # 2.生成一个token
+
+        from rest_framework_jwt.settings import api_settings
+
+        #① 获取 jwt的2个方法
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        #② 将user信息 传递给 payload方法
+        payload = jwt_payload_handler(user)
+
+        #③ 对payload返回的数据进行编码,编码之后就是token
+        token = jwt_encode_handler(payload)
+
+
+        # 3.将token返回给前端
+        # 让序列化器 来获取token
+
+        user.token = token
+
         return user
+
+
+# class Person(object):
+#
+#     name = 'itcast'
+#
+# p = Person()
+#
+# p.name = 'abc'
+# p.age = 10
+#
+# p2 = Person()
+# print(p2.age)
