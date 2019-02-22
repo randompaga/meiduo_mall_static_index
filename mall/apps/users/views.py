@@ -49,7 +49,9 @@ from users.serializers import RegisterUserSerializer
 
 """
 from rest_framework.views import APIView
-class RegisterUsernameAPIView(APIView):
+from rest_framework.generics import GenericAPIView
+# class RegisterUsernameAPIView(APIView):
+class RegisterUsernameAPIView(GenericAPIView):
 
     def get(self,request,username):
         # 1. 后端接收数据
@@ -82,29 +84,45 @@ class RegisterUsernameAPIView(APIView):
 四.选取哪个视图(结合需求,使用排除法)
     APIView                         :基类
     GenericAPIView                  :对列表视图和详情视图做了通用支持,一般和mixin配合使用
-    CreateAPIView                    : 连http请求方法都不用写
+    CreateAPIView                   : 连http请求方法都不用写
 
 五.编码
 
 """
 from users.serializers import RegisterUserSerializer
-class RegisterUserAPIView(APIView):
+#############################一级视图##########################################
+# class RegisterUserAPIView(APIView):
+#
+#     def post(self,request):
+#         # 1.接收数据
+#         data = request.data
+#         # 2.校验数据
+#         serializer = RegisterUserSerializer(data=data)
+#         serializer.is_valid()
+#         # 3.数据入库
+#         serializer.save()
+#         # 4.返回相应
+#         # serializer.data
+#         # 当我们把模型赋值给序列化器之后, 调用序列化器的 序列化方法(serializer.data 将对象转换为字典)
+#         # 原理是: 序列化器根据字段来获取模型中的数据
+#
+#         return Response(serializer.data)
 
-    def post(self,request):
-        # 1.接收数据
-        data = request.data
-        # 2.校验数据
-        serializer = RegisterUserSerializer(data=data)
-        serializer.is_valid()
-        # 3.数据入库
-        serializer.save()
-        # 4.返回相应
-        # serializer.data
-        # 当我们把模型赋值给序列化器之后, 调用序列化器的 序列化方法(serializer.data 将对象转换为字典)
-        # 原理是: 序列化器根据字段来获取模型中的数据
+#############################二级视图##########################################
+# from rest_framework.mixins import CreateModelMixin
+# class RegisterUserAPIView(CreateModelMixin,GenericAPIView):
+#
+#     serializer_class = RegisterUserSerializer
+#
+#     def post(self,request):
+#
+#         return self.create(request)
 
-        return Response(serializer.data)
+#############################三级视图##########################################
+from rest_framework.generics import CreateAPIView
+class RegisterUserAPIView(CreateAPIView):
 
+    serializer_class = RegisterUserSerializer
 
 
 
