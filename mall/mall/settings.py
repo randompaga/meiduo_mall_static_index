@@ -29,6 +29,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# #跨域访问第三步,设置白名单, 白名单就是允许谁访问
+CORS_ORIGIN_WHITELIST  =  (
+    '127.0.0.1:8080',
+    'localhost:8080',
+
+)
+
 
 # Application definition
 
@@ -53,9 +60,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'rest_framework',
+    'corsheaders', #跨域访问第一步
 ]
 
 MIDDLEWARE = [
+    # #跨域访问第二步
+    # 添加在最上边
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
