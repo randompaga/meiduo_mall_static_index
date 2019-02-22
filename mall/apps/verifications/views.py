@@ -37,7 +37,19 @@ from verifications.constants import SMSIMAGE_EXPIRE_TIME
 from libs.captcha.captcha import captcha
 from django_redis import get_redis_connection
 
+from rest_framework import renderers
+class JPEGRenderer(renderers.BaseRenderer):
+    media_type = 'image/jpeg'
+    format = 'jpg'
+    charset = None
+    render_style = 'binary'
+
+    def render(self, data, media_type=None, renderer_context=None):
+        return data
+
 class RegisterImageCodeAPIView(APIView):
+
+    renderer_classes = [JPEGRenderer]
 
     def get(self,request,image_code_id):
         # 1.后端接收uuid
@@ -54,11 +66,11 @@ class RegisterImageCodeAPIView(APIView):
         redis_conn.setex('img_%s'%image_code_id,SMSIMAGE_EXPIRE_TIME,text)
 
         # 4.返回图片验证码
-        return HttpResponse(image,content_type='image/jpeg')    #正确
+        # return HttpResponse(image,content_type='image/jpeg')    #正确
 
         # 错误的
         # return HttpResponse(image)
-        # return Response(image,content_type='image/jpeg')
+        return Response(image,content_type='image/jpeg')
 
 """
 一.分析需求(你要干什么)
