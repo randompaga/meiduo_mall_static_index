@@ -91,5 +91,11 @@ class OauthQQUserAPIView(APIView):
 
         token = oauth.get_access_token(code)
         # 3.通过token换取openid
+        openid = oauth.get_open_id(token)
+
+        #'C7299EDD52B07DC8B0B3DFF767909803'
+        #
+        # openid:CBCF1AA40E417CD73880666C3D6FA1D6
+        #
 
         pass
