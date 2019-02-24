@@ -3,6 +3,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from oauth.models import OAuthQQUser
+
 """
 对于应用而言，需要进行两步：
 1. 获取Authorization Code；        其实就是通过 url来得到用户的同意
@@ -65,7 +67,11 @@ class OauthQQURLAPIView(APIView):
     1.接收code
     2.通过code换取token
     3.通过token换取openid
-    4.
+
+    4. 如果用户绑定过,则直接登陆
+         如果用户没绑定过,则绑定
+
+
 三. 请求方式和路由
     GET     /oauth/qq/users/?code=xxxx
 
@@ -88,14 +94,43 @@ class OauthQQUserAPIView(APIView):
         oauth=OAuthQQ(client_id=settings.QQ_CLIENT_ID,
                         client_secret=settings.QQ_CLIENT_SECRET,
                         redirect_uri=settings.QQ_REDIRECT_URI)
-
-        token = oauth.get_access_token(code)
-        # 3.通过token换取openid
-        openid = oauth.get_open_id(token)
-
+        try:
+            token = oauth.get_access_token(code)
+            # 3.通过token换取openid
+            openid = oauth.get_open_id(token)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         #'C7299EDD52B07DC8B0B3DFF767909803'
         #
         # openid:CBCF1AA40E417CD73880666C3D6FA1D6
         #
+
+        #4. 根据openid进行查询判断
+        try:
+            qquser = OAuthQQUser.objects.get(openid=openid)
+        except OAuthQQUser.DoesNotExist:
+            # 如果没查询出来,则说明没绑定过,则绑定
+            pass
+        else:
+            #没有异常的时候
+            # 如果查询出来,则说明绑定过,则登陆
+
+            from rest_framework_jwt.settings import api_settings
+
+            jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+            jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+            payload = jwt_payload_handler(qquser.user)
+            token = jwt_encode_handler(payload)
+
+
+            return Response({'token':token,
+                             'username':qquser.user.username,
+                             'user_id':qquser.user.id
+                             })
+
+
+
+
 
         pass
