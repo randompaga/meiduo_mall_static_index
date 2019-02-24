@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from oauth.models import OAuthQQUser
+from oauth.utils import generate_openid_token
 
 """
 对于应用而言，需要进行两步：
@@ -113,7 +114,10 @@ class OauthQQUserAPIView(APIView):
 
             #1. openid属于一个敏感信息,
             #2. 绑定界面 不应该一直有效,应该设置一个有效期
-            return Response({'access_token':openid})
+
+            openid_itsdangerous =  generate_openid_token(openid)
+
+            return Response({'access_token':openid_itsdangerous})
 
         else:
             #没有异常的时候
