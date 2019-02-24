@@ -76,12 +76,20 @@ class OauthQQURLAPIView(APIView):
     ListAPIVIew,RetrieveAPIView:
 
 """
-
-class QQOauthUserAPIView(APIView):
+from rest_framework import status
+class OauthQQUserAPIView(APIView):
 
     def get(self,request):
         # 1.接收code
+        code = request.query_params.get('code')
+        if code is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         # 2.通过code换取token
+        oauth=OAuthQQ(client_id=settings.QQ_CLIENT_ID,
+                        client_secret=settings.QQ_CLIENT_SECRET,
+                        redirect_uri=settings.QQ_REDIRECT_URI)
+
+        token = oauth.get_access_token(code)
         # 3.通过token换取openid
 
         pass
