@@ -14,6 +14,20 @@ urlpatterns = [
     # url(r'^api-token-auth/',obtain_jwt_token),
 ]
 
+"""
+
+登陆:
+    1.接收前端提交的数据(用户名和密码)
+    2.校验用户名和密码
+    3.获取user
+
+obtain_jwt_token
+一,也是调用的django自带的认证系统,先完成用户的身份认证  user
+
+二,来生成一个token
+"""
+
 #eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
 #eyJ1c2VyX2lkIjoxMCwiZW1haWwiOiIiLCJ1c2VybmFtZSI6Iml0Y2FzdCIsImV4cCI6MTU1MDgyNDAxOX0.
 #c4errq2huCv9VcSh4MWWpAEFcC-tH_eiCigZld6me5A
+

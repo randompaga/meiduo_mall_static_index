@@ -254,9 +254,17 @@ AUTH_USER_MODEL = 'users.User'
 
 
 # JWT
+import datetime
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER':
     #'rest_framework_jwt.utils.jwt_response_payload_handler',
-        'utils.users.jwt_response_payload_handler'
+        'utils.users.jwt_response_payload_handler',
+
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
 }
+
+AUTHENTICATION_BACKENDS = [
+    #'django.contrib.auth.backends.ModelBackend'
+    'utils.users.UsernameMobileModelBackend'
+]
 
