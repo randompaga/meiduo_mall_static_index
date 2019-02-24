@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from oauth.models import OAuthQQUser
+from oauth.serializers import OauthQQUserSerializer
 from oauth.utils import generate_openid_token
 
 """
@@ -46,7 +47,8 @@ class OauthQQURLAPIView(APIView):
     def get(self,request):
 
         #1.创建 OauthQQ的实例对象
-        state = 'test'
+        # state 的真实含义是: 登陆成功之后,跳转到指定的页面
+        state = '/'
 
         oauth = OAuthQQ(client_id=settings.QQ_CLIENT_ID,
                         client_secret=settings.QQ_CLIENT_SECRET,
@@ -139,7 +141,32 @@ class OauthQQUserAPIView(APIView):
 
 
     def post(self,request):
-        pass
+
+        # 1. 接收数据
+        data = request.data
+        # 2. 校验数据  (access_token,短信验证码,判断用户是否存在)
+        serializer = OauthQQUserSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        # 3. 将用户信息和openid保存起来
+        qquser = serializer.save()
+        # 4. 返回相应
+
+        #绑定完成之后,应该自动登陆
+
+        from rest_framework_jwt.settings import api_settings
+
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        payload = jwt_payload_handler(qquser.user)
+        token = jwt_encode_handler(payload)
+
+        return Response({'token': token,
+                         'username': qquser.user.username,
+                         'user_id': qquser.user.id
+                         })
+
+
 
 
 """
