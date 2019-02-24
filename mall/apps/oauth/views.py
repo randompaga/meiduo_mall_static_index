@@ -24,10 +24,22 @@ https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101474184&r
 
 五.编码
 """
-
+from QQLoginTool.QQtool import OAuthQQ
+from mall import settings
 class OauthQQURLAPIView(APIView):
 
     def get(self,request):
 
-        return Response({"auth_url":"https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101474184&redirect_uri=http://www.meiduo.site:8080/oauth_callback.html&state=test"})
+        #1.创建 OauthQQ的实例对象
+        state = 'test'
+
+        oauth = OAuthQQ(client_id=settings.QQ_CLIENT_ID,
+                        client_secret=settings.QQ_CLIENT_SECRET,
+                        redirect_uri=settings.QQ_REDIRECT_URI,
+                        state=state)
+        #2.调用实例对象的方法
+        auth_url = oauth.get_qq_url()
+
+
+        return Response({"auth_url":auth_url})
 
