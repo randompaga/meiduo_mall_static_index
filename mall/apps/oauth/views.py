@@ -110,7 +110,11 @@ class OauthQQUserAPIView(APIView):
             qquser = OAuthQQUser.objects.get(openid=openid)
         except OAuthQQUser.DoesNotExist:
             # 如果没查询出来,则说明没绑定过,则绑定
-            pass
+
+            #1. openid属于一个敏感信息,
+            #2. 绑定界面 不应该一直有效,应该设置一个有效期
+            return Response({'access_token':openid})
+
         else:
             #没有异常的时候
             # 如果查询出来,则说明绑定过,则登陆
@@ -130,7 +134,68 @@ class OauthQQUserAPIView(APIView):
                              })
 
 
-
-
-
+    def post(self,request):
         pass
+
+
+"""
+一.分析需求
+    当用户点击绑定的时候,需要让前端将 openid, 手机号,密码,短信验证码提交给后端
+二.步骤(大概的思路)
+    1. 接收数据
+    2. 校验数据
+    3. 将用户信息和openid保存起来
+    4. 返回相应
+
+三.确定请求方式和路由
+    POST    oauth/qq/users/
+
+四.选取哪个视图(结合需求,使用排除法)
+五.编码
+
+"""
+
+
+#####################itsdangerous#####################################
+from mall import settings
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+#1. 创建一个序列化器
+#secret_key,            秘钥
+# expires_in=None       有效期,单位是 秒数
+
+s = Serializer(secret_key=settings.SECRET_KEY,expires_in=3600)
+
+#2. 模拟组织数据
+data = {
+    'openid':'1234567890'
+}
+
+#3. 对数据进行加密处理
+token = s.dumps(data)
+
+# eyJpYXQiOjE1NTA5OTgyOTUsImV4cCI6MTU1MTAwMTg5NSwiYWxnIjoiSFMyNTYifQ.
+# eyJvcGVuaWQiOiIxMjM0NTY3ODkwIn0.
+# 5vuphhwsDZR-i-3drrGe5nHZHrz-DE91K7z9fBxgMn4
+
+
+# 解密
+
+#1. 创建序列化器
+s = Serializer(secret_key=settings.SECRET_KEY,expires_in=3600)
+#2.调用 序列化器的loads 方法
+s.loads(token)
+
+
+
+# 如果我们的token 被修改了,或者 过期了 都会检测出数据的问题
+s = Serializer(secret_key=settings.SECRET_KEY,expires_in=1)
+
+#2. 模拟组织数据
+data = {
+    'openid':'1234567890'
+}
+
+#3. 对数据进行加密处理
+token = s.dumps(data)
+
