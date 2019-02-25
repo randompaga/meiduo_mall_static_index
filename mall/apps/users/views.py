@@ -91,22 +91,22 @@ class RegisterUsernameAPIView(GenericAPIView):
 """
 from users.serializers import RegisterUserSerializer
 #############################一级视图##########################################
-# class RegisterUserAPIView(APIView):
-#
-#     def post(self,request):
-#         # 1.接收数据
-#         data = request.data
-#         # 2.校验数据
-#         serializer = RegisterUserSerializer(data=data)
-#         serializer.is_valid()
-#         # 3.数据入库
-#         serializer.save()
-#         # 4.返回相应
-#         # serializer.data
-#         # 当我们把模型赋值给序列化器之后, 调用序列化器的 序列化方法(serializer.data 将对象转换为字典)
-#         # 原理是: 序列化器根据字段来获取模型中的数据
-#
-#         return Response(serializer.data)
+class RegisterUserAPIView(APIView):
+
+    def post(self,request):
+        # 1.接收数据
+        data = request.data
+        # 2.校验数据
+        serializer = RegisterUserSerializer(data=data)
+        serializer.is_valid()
+        # 3.数据入库
+        serializer.save()
+        # 4.返回相应
+        # serializer.data
+        # 当我们把模型赋值给序列化器之后, 调用序列化器的 序列化方法(serializer.data 将对象转换为字典)
+        # 原理是: 序列化器根据字段来获取模型中的数据
+
+        return Response(serializer.data)
 
 
 #############################二级视图##########################################
@@ -120,10 +120,10 @@ from users.serializers import RegisterUserSerializer
 #         return self.create(request)
 
 #############################三级视图##########################################
-from rest_framework.generics import CreateAPIView
-class RegisterUserAPIView(CreateAPIView):
-
-    serializer_class = RegisterUserSerializer
+# from rest_framework.generics import CreateAPIView
+# class RegisterUserAPIView(CreateAPIView):
+#
+#     serializer_class = RegisterUserSerializer
 
 
 """
@@ -181,24 +181,36 @@ class RegisterUserAPIView(CreateAPIView):
 
 """
 from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser,IsAuthenticatedOrReadOnly
-class UserCenterInfoAPIView(APIView):
-
-    # 1.个人中心必须是登陆用户才可以访问
+# class UserCenterInfoAPIView(APIView):
+#
+#     # 1.个人中心必须是登陆用户才可以访问
+#     permission_classes = [IsAuthenticated]
+#
+#     def get(self,request):
+#
+#
+#         #from rest_framework_jwt.settings import api_settings
+#         # jwt_encode(user)
+#         # user = jwt_decode()
+#
+#         # token
+#         # 2. 获取用户信息  user
+#         user = request.user
+#
+#         # 3. 将对象转换为字典
+#         serializer = UserCenterInfoSerializer(user)
+#         # 4. 返回相应
+#         return Response(serializer.data)
+from rest_framework.generics import ListAPIView,RetrieveAPIView
+class UserCenterInfoAPIView(RetrieveAPIView):
+    #权限
     permission_classes = [IsAuthenticated]
 
-    def get(self,request):
-
-        #from rest_framework_jwt.settings import api_settings
-        # jwt_encode(user)
-        # user = jwt_decode()
-
-        # token
-        # 2. 获取用户信息  user
-        user = request.user
-
-        # 3. 将对象转换为字典
-        serializer = UserCenterInfoSerializer(user)
-        # 4. 返回相应
-        return Response(serializer.data)
+    # queryset = User.objects.all()
+    #序列化器
+    serializer_class = UserCenterInfoSerializer
 
 
+    def get_object(self):
+
+        return self.request.user

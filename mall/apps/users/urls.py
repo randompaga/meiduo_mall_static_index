@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^auths/',obtain_jwt_token),
     # url(r'^api-token-auth/',obtain_jwt_token),
 
+
+
     url(r'^infos/$',views.UserCenterInfoAPIView.as_view()),
 ]
 

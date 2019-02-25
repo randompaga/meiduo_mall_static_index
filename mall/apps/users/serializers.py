@@ -144,6 +144,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         # 让序列化器 来获取token
 
         user.token = token
+        
 
         return user
 
