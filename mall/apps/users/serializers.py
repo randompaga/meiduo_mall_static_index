@@ -198,40 +198,45 @@ class UserEmailSerializer(serializers.ModelSerializer):
 
         #在这里发送邮件
 
-        from django.core.mail import send_mail
-        # send_mail(subject, message, from_email, recipient_list,)
-        # subject,          主题
-        subject = '美多商场激活邮件'
-        # message,          内容
-        message = ''
-        # from_email,       谁发送的
-        # 谁发送的
-        from_email = 'qi_rui_hua@163.com'
-        # recipient_list    收件人列表
-        recipient_list=[email]
-
-        #生成一个激活的url
-        verify_url = generate_verify_url(instance.id,email)
-
-        # from mall import settings
-        # from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+        # from django.core.mail import send_mail
+        # # send_mail(subject, message, from_email, recipient_list,)
+        # # subject,          主题
+        # subject = '美多商场激活邮件'
+        # # message,          内容
+        # message = ''
+        # # from_email,       谁发送的
+        # # 谁发送的
+        # from_email = 'qi_rui_hua@163.com'
+        # # recipient_list    收件人列表
+        # recipient_list=[email]
         #
-        # s = Serializer(secret_key=settings.SECRET_KEY,expires_in=3600)
+        # #生成一个激活的url
+        # verify_url = generate_verify_url(instance.id,email)
         #
-        # token = s.dumps({'id':instance.id,'email':email})
+        # # from mall import settings
+        # # from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+        # #
+        # # s = Serializer(secret_key=settings.SECRET_KEY,expires_in=3600)
+        # #
+        # # token = s.dumps({'id':instance.id,'email':email})
+        # #
+        # #
+        # # verify_url = 'http://www.meiduo.site:8080/success_verify_email.html?token=%s'%token.decode()
         #
         #
-        # verify_url = 'http://www.meiduo.site:8080/success_verify_email.html?token=%s'%token.decode()
+        # html_message = '<p>尊敬的用户您好！</p>' \
+        #                '<p>感谢您使用美多商城。</p>' \
+        #                '<p>您的邮箱为：%s 。请点击此链接激活您的邮箱：</p>' \
+        #                '<p><a href="%s">%s<a></p>' % (email, verify_url, verify_url)
+        #
+        # send_mail(subject,message,from_email,recipient_list,
+        #           html_message=html_message)
 
 
-        html_message = '<p>尊敬的用户您好！</p>' \
-                       '<p>感谢您使用美多商城。</p>' \
-                       '<p>您的邮箱为：%s 。请点击此链接激活您的邮箱：</p>' \
-                       '<p><a href="%s">%s<a></p>' % (email, verify_url, verify_url)
 
-        send_mail(subject,message,from_email,recipient_list,
-                  html_message=html_message)
+        from celery_tasks.email.tasks import send_active_email
 
+        send_active_email.delay(email,instance.id)
 
         return instance
 
