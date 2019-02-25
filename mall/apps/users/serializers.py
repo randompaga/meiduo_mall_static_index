@@ -204,7 +204,8 @@ class UserEmailSerializer(serializers.ModelSerializer):
         # message,          内容
         message = 'jfakjfkladjlf'
         # from_email,       谁发送的
-        from_email = ''
+        # 谁发送的
+        from_email = 'qi_rui_hua@163.com'
         # recipient_list    收件人列表
         recipient_list=[email]
 
