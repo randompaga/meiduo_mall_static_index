@@ -171,3 +171,15 @@ class UserCenterInfoSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username','mobile','email','id','email_active']
 
+
+class UserEmailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['email']
+
+        extra_kwargs = {
+            'email':{
+                'required':True
+            }
+        }

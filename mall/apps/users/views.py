@@ -8,7 +8,7 @@ from rest_framework.response import Response
 # from apps.users.models import User            错误
 
 from users.models import User
-from users.serializers import RegisterUserSerializer, UserCenterInfoSerializer
+from users.serializers import RegisterUserSerializer, UserCenterInfoSerializer, UserEmailSerializer
 
 """
 一.分析需求
@@ -219,6 +219,7 @@ class UserCenterInfoAPIView(RetrieveAPIView):
 """
 一.分析需求
     1.当用户输入邮箱之后,我们要保存邮箱信息
+
     2.还需要给 邮箱发送一个激活邮件
         激活邮件的内容
     3.激活邮件的状态
@@ -239,4 +240,19 @@ class UserCenterInfoAPIView(RetrieveAPIView):
     UpdateAPIView                    : 连http请求方法都不用写
 五.编码
 """
+class UserEmailAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def put(self,request):
+        # 1.接收数据
+        data = request.data
+        # 2.校验数据
+        serializer = UserEmailSerializer(instance=request.user,data=data)
+        serializer.is_valid(raise_exception=True)
+        # 3.更新数据 put
+        serializer.save()
+        # 4.返回相应
+        return Response(serializer.data)
+
 

@@ -16,6 +16,8 @@ urlpatterns = [
 
 
     url(r'^infos/$',views.UserCenterInfoAPIView.as_view()),
+
+    url(r'^emails/$',views.UserEmailAPIView.as_view()),
 ]
 
 """
