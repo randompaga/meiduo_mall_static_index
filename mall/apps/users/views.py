@@ -260,7 +260,7 @@ class UserCenterInfoAPIView(RetrieveAPIView):
 
 # from rest_framework.mixins import UpdateModelMixin
 # class UserEmailAPIView(UpdateModelMixin,GenericAPIView):
-#
+#      permission_classes = [IsAuthenticated]
 #     # queryset = User.objects.all()
 #
 #     def get_object(self):
@@ -277,6 +277,8 @@ class UserCenterInfoAPIView(RetrieveAPIView):
 
 from rest_framework.generics import UpdateAPIView
 class UserEmailAPIView(UpdateAPIView):
+
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
 
