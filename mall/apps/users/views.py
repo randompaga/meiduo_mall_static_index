@@ -214,3 +214,29 @@ class UserCenterInfoAPIView(RetrieveAPIView):
     def get_object(self):
 
         return self.request.user
+
+
+"""
+一.分析需求
+    1.当用户输入邮箱之后,我们要保存邮箱信息
+    2.还需要给 邮箱发送一个激活邮件
+        激活邮件的内容
+    3.激活邮件的状态
+        点击激活邮件,更改邮件的状态
+
+二.步骤(大概的思路)
+    1.接收数据
+    2.校验数据
+    3.更新数据 put
+    4.返回相应
+
+三.确定请求方式和路由
+    PUT     /users/email/
+
+四.选取哪个视图(结合需求,使用排除法)
+    APIView                         :基类
+    GenericAPIView                  :对列表视图和详情视图做了通用支持,一般和mixin配合使用
+    UpdateAPIView                    : 连http请求方法都不用写
+五.编码
+"""
+

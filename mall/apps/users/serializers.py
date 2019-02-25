@@ -144,7 +144,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         # 让序列化器 来获取token
 
         user.token = token
-        
+
 
         return user
 
@@ -169,5 +169,5 @@ class UserCenterInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username','mobile','email','id']
+        fields = ['username','mobile','email','id','email_active']
 
