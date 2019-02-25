@@ -240,19 +240,49 @@ class UserCenterInfoAPIView(RetrieveAPIView):
     UpdateAPIView                    : 连http请求方法都不用写
 五.编码
 """
-class UserEmailAPIView(APIView):
+# class UserEmailAPIView(APIView):
+#
+#     permission_classes = [IsAuthenticated]
+#
+#     def put(self,request):
+#         # 1.接收数据
+#         data = request.data
+#         # 2.校验数据
+#         serializer = UserEmailSerializer(instance=request.user,data=data)
+#         serializer.is_valid(raise_exception=True)
+#         # 3.更新数据 put
+#         serializer.save()
+#         # 4.返回相应
+#         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated]
 
-    def put(self,request):
-        # 1.接收数据
-        data = request.data
-        # 2.校验数据
-        serializer = UserEmailSerializer(instance=request.user,data=data)
-        serializer.is_valid(raise_exception=True)
-        # 3.更新数据 put
-        serializer.save()
-        # 4.返回相应
-        return Response(serializer.data)
+# from rest_framework.mixins import UpdateModelMixin
+# class UserEmailAPIView(UpdateModelMixin,GenericAPIView):
+#
+#     # queryset = User.objects.all()
+#
+#     def get_object(self):
+#
+#         return self.request.user
+#
+#     serializer_class = UserEmailSerializer
+#
+#
+#     def put(self,request):
+#
+#         return self.update(request)
+
+
+from rest_framework.generics import UpdateAPIView
+class UserEmailAPIView(UpdateAPIView):
+
+    def get_object(self):
+
+        return self.request.user
+
+    serializer_class = UserEmailSerializer
+
+
+
 
 
