@@ -183,3 +183,32 @@ class UserEmailSerializer(serializers.ModelSerializer):
                 'required':True
             }
         }
+
+
+
+    #保存完邮件信息之后
+
+    def update(self, instance, validated_data):
+        # instance = user
+        #接收邮件信息
+        email = validated_data.get('email')
+        instance.email=email
+        instance.save()
+
+        #在这里发送邮件
+
+        from django.core.mail import send_mail
+        # send_mail(subject, message, from_email, recipient_list,)
+        # subject,          主题
+        subject = '美多商场激活邮件'
+        # message,          内容
+        message = 'jfakjfkladjlf'
+        # from_email,       谁发送的
+        from_email = ''
+        # recipient_list    收件人列表
+        recipient_list=[email]
+
+        send_mail(subject,message,from_email,recipient_list)
+
+
+        return instance

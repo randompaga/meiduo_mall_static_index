@@ -251,7 +251,9 @@ class UserCenterInfoAPIView(RetrieveAPIView):
 #         serializer = UserEmailSerializer(instance=request.user,data=data)
 #         serializer.is_valid(raise_exception=True)
 #         # 3.更新数据 put
+
 #         serializer.save()
+
 #         # 4.返回相应
 #         return Response(serializer.data)
 
