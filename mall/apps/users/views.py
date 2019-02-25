@@ -8,7 +8,7 @@ from rest_framework.response import Response
 # from apps.users.models import User            错误
 
 from users.models import User
-from users.serializers import RegisterUserSerializer
+from users.serializers import RegisterUserSerializer, UserCenterInfoSerializer
 
 """
 一.分析需求
@@ -154,4 +154,51 @@ class RegisterUserAPIView(CreateAPIView):
 四.选取哪个视图(结合需求,使用排除法)
 五.编码
 """
+
+
+##########################个人中心##########################################
+
+"""
+一.分析需求
+    当用户点击个人中心的时候,需要让前端将token传递过来
+
+二.步骤(大概的思路)
+    1. 个人中心必须是登陆用户才可以访问
+
+    2. 获取用户信息  user
+    3. 将对象转换为字典
+    4. 返回相应
+
+三.确定请求方式和路由
+    GET     users/infos/
+
+四.选取哪个视图(结合需求,使用排除法)
+    APIView                         :基类
+    GenericAPIView                  :对列表视图和详情视图做了通用支持,一般和mixin配合使用
+    ListAPIView RetrieveAPIView     : 连http请求方法都不用写
+
+五.编码
+
+"""
+from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser,IsAuthenticatedOrReadOnly
+class UserCenterInfoAPIView(APIView):
+
+    # 1.个人中心必须是登陆用户才可以访问
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request):
+
+        #from rest_framework_jwt.settings import api_settings
+        # jwt_encode(user)
+        # user = jwt_decode()
+
+        # token
+        # 2. 获取用户信息  user
+        user = request.user
+
+        # 3. 将对象转换为字典
+        serializer = UserCenterInfoSerializer(user)
+        # 4. 返回相应
+        return Response(serializer.data)
+
 

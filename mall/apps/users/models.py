@@ -11,6 +11,8 @@ class User(AbstractUser):
 
     mobile=models.CharField(verbose_name='手机号',max_length=11,unique=True)
 
+
+
     class Meta:
         db_table = 'tb_users'
         verbose_name = '用户'
