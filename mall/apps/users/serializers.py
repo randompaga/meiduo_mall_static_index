@@ -258,3 +258,7 @@ data = {
 
 #3.对数据进行加密
 token = s.dumps(data)
+
+
+
+s.loads(token)

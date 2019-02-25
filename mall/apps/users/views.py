@@ -287,6 +287,58 @@ class UserEmailAPIView(UpdateAPIView):
     serializer_class = UserEmailSerializer
 
 
+"""
+一.分析需求
+    当用户点击激活邮件的时候,需要让前端将 token 传递给后端
+二.步骤(大概的思路)
+    1. 接收token
+    2. 对token进行解密   {id:xxx,email:xxx}
+    3. 查询用户信息
+    4. 更改用户信息就可以了
+    5. 返回相应
+三.确定请求方式和路由
+    GET     /users/emails/verifications/?token=xxxx
+四.选取哪个视图(结合需求,使用排除法)
+    APIView
+
+五.编码
+"""
+from rest_framework import status
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import BadSignature,SignatureExpired
+from mall import settings
+class UserEmailVerificationAPIView(APIView):
+
+
+    def get(self,request):
+        # 1. 接收token
+        token = request.query_params.get('token')
+        if token is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # 2. 对token进行解密   {id:xxx,email:xxx}
+
+        s = Serializer(secret_key=settings.SECRET_KEY,expires_in=3600)
+
+        #解密
+        try:
+            result = s.loads(token)
+        except BadSignature:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # 3. 查询用户信息
+        id = result.get('id')
+        email = result.get('email')
+
+        try:
+            user = User.objects.get(id=id,email=email)
+        # user = User.objects.filter().filter()
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # 4. 更改用户信息就可以了
+        user.email_active=True
+        user.save()
+        # 5. 返回相应
+        return Response({'msg':'ok'})
+
 
 
 
