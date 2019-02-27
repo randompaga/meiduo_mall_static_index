@@ -372,15 +372,34 @@ class UserEmailVerificationAPIView(APIView):
 五.编码
 
 """
-from rest_framework.generics import CreateAPIView
-class UserAddressAPIView(CreateAPIView):
-
-    permission_classes = [IsAuthenticated]
-
-    serializer_class = AddressSerializer
+# from rest_framework.generics import CreateAPIView
+# class UserAddressAPIView(CreateAPIView):
+#
+#     permission_classes = [IsAuthenticated]
+#
+#     serializer_class = AddressSerializer
 
 
     # AddressSerializer(instance=,)
+
+
+class UserAddressAPIView(APIView):
+    # 1.只有登陆用户才可以访问
+    permission_classes = [IsAuthenticated]
+    def post(self,request):
+        #
+        # 2.接收数据
+        data = request.data
+        # 3.校验数据
+        serializer = AddressSerializer(data=data,context={'request':request,
+                                                          'view':self})
+        serializer.is_valid(raise_exception=True)
+        # 4.数据入库
+        serializer.save()
+        # 5.返回相应
+        return Response(serializer.data)
+
+
 
 
 

@@ -245,6 +245,7 @@ class AddressSerializer(serializers.ModelSerializer):
     province = serializers.StringRelatedField(read_only=True)
     city = serializers.StringRelatedField(read_only=True)
     district = serializers.StringRelatedField(read_only=True)
+
     province_id = serializers.IntegerField(label='省ID', required=True)
     city_id = serializers.IntegerField(label='市ID', required=True)
     district_id = serializers.IntegerField(label='区ID', required=True)
@@ -256,6 +257,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
+        # self.context 二级视图 自动的添加
 
         user = self.context['request'].user
         validated_data['user_id']=user.id
