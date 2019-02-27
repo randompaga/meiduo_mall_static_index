@@ -81,7 +81,6 @@ class ProvienceAPIView(APIView):
         return Response(serializer.data)
 
 
-
 class DistrictAPIView(APIView):
     #获取市/区县信息
     def get(self,request,id):
@@ -91,6 +90,8 @@ class DistrictAPIView(APIView):
         serializer = AreaSerializer(areas,many=True)
 
         return Response(serializer.data)
+
+
 
 from rest_framework.viewsets import ViewSet,ReadOnlyModelViewSet
 from rest_framework_extensions.cache.mixins import ListCacheResponseMixin,RetrieveCacheResponseMixin,CacheResponseMixin
