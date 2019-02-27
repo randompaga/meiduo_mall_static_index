@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from areas.models import Area
-from areas.serializers import AreaSerializer
+from areas.serializers import AreaSerializer, SubsAreaSerializer
 
 """
 
@@ -19,7 +19,7 @@ from areas.serializers import AreaSerializer
 class BookInfo(models.Model):
 
 
-    # peopleinfo_set
+    # peopleinfo_set = [人物id,人物id,人物id]
 
     pass
 
@@ -91,5 +91,35 @@ class DistrictAPIView(APIView):
         serializer = AreaSerializer(areas,many=True)
 
         return Response(serializer.data)
+
+from rest_framework.viewsets import ViewSet,ReadOnlyModelViewSet
+
+
+class AreaModelViewSet(ReadOnlyModelViewSet):
+
+    # 列表视图, 把查询结果集的所有数据都获取到
+    # 省的信息  Area.objects.filter(parent=None)
+    # 市/区县的信息 Area.objects.all()
+
+    # queryset = Area.objects.filter(parent=None)
+
+    # queryset = Area.objects.all()
+
+    def get_queryset(self):
+        # self 是视图集
+        # 视图集有一个属性 action
+        # action 就是  list,update,retrieve
+        if self.action == 'list':
+           return Area.objects.filter(parent=None)
+        else:
+           return  Area.objects.all()
+
+    # serializer_class = AreaSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return AreaSerializer
+        else:
+            return SubsAreaSerializer
 
 

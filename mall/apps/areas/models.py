@@ -1,20 +1,33 @@
 from django.db import models
 
+#省
 class Area(models.Model):
-    """
-    行政区划
-    """
     #id 默认生成的
     name = models.CharField(max_length=20, verbose_name='名称')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='上级行政区划')
-
+    # area_set = [市id,市id]
     class Meta:
         db_table = 'tb_areas'
         verbose_name = '行政区划'
         verbose_name_plural = '行政区划'
-
     def __str__(self):
         return self.name
+#市
+# class Area(models.Model):
+#     """
+#     行政区划
+#     """
+#     #id 默认生成的
+#     area_set = [区县id,区县id,区县id]
+
+#区县
+# class Area(models.Model):
+#     """
+#     行政区划
+#     """
+#     #id 默认生成的
+#     name = models.CharField(max_length=20, verbose_name='名称')
+#     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='上级行政区划')
 
 
 
