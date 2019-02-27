@@ -168,6 +168,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 class UserCenterInfoSerializer(serializers.ModelSerializer):
 
 
+
     class Meta:
         model = User
         fields = ['username','mobile','email','id','email_active']

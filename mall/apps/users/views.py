@@ -275,6 +275,7 @@ class UserCenterInfoAPIView(RetrieveAPIView):
 #         return self.update(request)
 
 
+
 from rest_framework.generics import UpdateAPIView
 class UserEmailAPIView(UpdateAPIView):
 

@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^users/',include('users.urls')),
     url(r'^verifications/',include('verifications.urls')),
     url(r'^oauth/',include('oauth.urls')),
+    url(r'^areas/',include('areas.urls')),
 ]

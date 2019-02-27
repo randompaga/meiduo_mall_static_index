@@ -72,6 +72,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders', #跨域访问第一步
     'oauth.apps.OauthConfig',
+    'areas.apps.AreasConfig',
+
+    # 只要使用模型就需要注册子应用
 ]
 
 MIDDLEWARE = [
