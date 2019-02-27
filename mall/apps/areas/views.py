@@ -93,9 +93,9 @@ class DistrictAPIView(APIView):
         return Response(serializer.data)
 
 from rest_framework.viewsets import ViewSet,ReadOnlyModelViewSet
+from rest_framework_extensions.cache.mixins import ListCacheResponseMixin,RetrieveCacheResponseMixin,CacheResponseMixin
 
-
-class AreaModelViewSet(ReadOnlyModelViewSet):
+class AreaModelViewSet(CacheResponseMixin,ReadOnlyModelViewSet):
 
     # 列表视图, 把查询结果集的所有数据都获取到
     # 省的信息  Area.objects.filter(parent=None)
