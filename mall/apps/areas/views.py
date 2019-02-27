@@ -105,6 +105,7 @@ class AreaModelViewSet(ReadOnlyModelViewSet):
 
     # queryset = Area.objects.all()
 
+    # 当我们的需求不同时,可以根据需求返回不同的查询结果集
     def get_queryset(self):
         # self 是视图集
         # 视图集有一个属性 action
