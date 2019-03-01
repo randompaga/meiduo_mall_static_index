@@ -15,13 +15,31 @@ from django.core.files.storage import Storage
 """
 from fdfs_client.client import Fdfs_client
 from django.utils.deconstruct import deconstructible
+from mall import settings
+
+# class Person(object):
+#
+#     def __init__(self,name=None):
+#         pass
+#
+# p = Person('阿三')
+#
+# Person()
+
 
 @deconstructible
 class MyStorage(Storage):
 
-    # def __init__(self, option=None):
-    #     if not option:
-    #         option = settings.CUSTOM_STORAGE_OPTIONS
+    # 初始化的时候 有任何配置信息 都设置为 默认值
+    def __init__(self, config_path=None,ip=None):
+        if not config_path:
+            config_path = settings.FDFS_CLIENT_CONF
+        self.config_path = config_path
+
+        if not ip:
+            ip = settings.FDFS_URL
+        self.ip = ip
+
 
     # open 打开文件(图片)
     # Fdfs 是通过 HTTP来访问我们的图片资源的,不需要打开
@@ -40,7 +58,11 @@ class MyStorage(Storage):
 
 
         #1.创建上传 的客户端
-        client = Fdfs_client('utils/fastdfs/client.conf')
+        # client = Fdfs_client('utils/fastdfs/client.conf')
+        # client = Fdfs_client(settings.FDFS_CLIENT_CONF)
+
+        client = Fdfs_client(self.config_path)
+
         #2.获取图片  我们不能通过name找到图片,所以通过content来获取图片内容
         # 读取的是 图片的二进制
         data = content.read()
@@ -80,7 +102,9 @@ class MyStorage(Storage):
     # 但是我们在访问图片的时候  需要自己再添加 http://ip:port/ + name
     # 所以我们重写 url方法,添加 http://ip:prot/ + name
     def url(self, name):
-        return 'http://192.168.229.148:8888/' + name
+        # return 'http://192.168.229.148:8888/' + name
+        # return settings.FDFS_URL + name
+        return self.ip + name
 
         # return name
         # pass
