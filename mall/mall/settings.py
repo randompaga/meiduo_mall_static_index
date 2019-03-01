@@ -77,8 +77,12 @@ INSTALLED_APPS = [
     'corsheaders', #跨域访问第一步
     'oauth.apps.OauthConfig',
     'areas.apps.AreasConfig',
-
+    'goods.apps.GoodsConfig',
+    'contents.apps.ContentsConfig',
     # 只要使用模型就需要注册子应用
+    'ckeditor',  # 富文本编辑器
+    'ckeditor_uploader',  # 富文本编辑器上传图片模块
+
 ]
 
 MIDDLEWARE = [
@@ -306,3 +310,22 @@ REST_FRAMEWORK_EXTENSIONS = {
     # 缓存存储
     'DEFAULT_USE_CACHE': 'default',
 }
+
+
+# 富文本编辑器ckeditor配置
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',  # 工具条功能
+        'height': 300,  # 编辑器高度
+        # 'width': 300,  # 编辑器宽
+    },
+}
+CKEDITOR_UPLOAD_PATH = ''  # 上传图片保存路径，使用了FastDFS，所以此处设为''
+
+
+
+
+
+
+
+
