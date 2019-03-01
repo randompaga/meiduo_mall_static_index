@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 # git的路径 直接pull 就可以
 # https://gitee.com/itcastitheima/meiduo_37.git
 
+# tel:18310820688
+# mail: qiruihua@itcast.cn/qiruihua@live.cn
+# qq:2860798672
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
