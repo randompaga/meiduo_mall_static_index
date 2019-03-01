@@ -82,7 +82,18 @@ INSTALLED_APPS = [
     # 只要使用模型就需要注册子应用
     'ckeditor',  # 富文本编辑器
     'ckeditor_uploader',  # 富文本编辑器上传图片模块
+    'django_crontab',  # 定时任务
+]
 
+# 定时任务
+CRONJOBS = [
+
+    # 参数一: 频次   分 时 日 月 周
+    # 参数二: 任务(函数)
+    # 参数三: 日志路径 (注意: 日志路径中 不能出现 中间缺少文件夹的情况)
+        # 日志路径错误,也会造成定时任务失败
+    # 每1分钟执行一次生成主页静态文件
+    ('*/1 * * * *', 'contents.crons.generate_static_index_html', '>> /home/python/Desktop/37/meiduo_37/mall/logs/crontab.log')
 ]
 
 MIDDLEWARE = [
