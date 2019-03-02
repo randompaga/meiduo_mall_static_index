@@ -80,8 +80,9 @@ INSTALLED_APPS = [
     'goods.apps.GoodsConfig',
     'contents.apps.ContentsConfig',
     # 只要使用模型就需要注册子应用
-    'ckeditor',  # 富文本编辑器
-    'ckeditor_uploader',  # 富文本编辑器上传图片模块
+    'ckeditor',
+    'ckeditor_uploader',
+
     'django_crontab',  # 定时任务
 ]
 
@@ -93,7 +94,8 @@ CRONJOBS = [
     # 参数三: 日志路径 (注意: 日志路径中 不能出现 中间缺少文件夹的情况)
         # 日志路径错误,也会造成定时任务失败
     # 每1分钟执行一次生成主页静态文件
-    ('*/1 * * * *', 'contents.crons.generate_static_index_html', '>> /home/python/Desktop/37/meiduo_37/mall/logs/crontab.log')
+    ('*/1 * * * *', 'contents.crons.generate_static_index_html', '>> /home/python/Desktop/meiduo_37/mall/logs/crontab.log'),
+
 ]
 
 MIDDLEWARE = [
@@ -141,7 +143,7 @@ DATABASES = {
         'PORT': 3306,  # 数据库端口
         'USER': 'root',  # 数据库用户名
         'PASSWORD': 'mysql',  # 数据库用户密码
-        'NAME': 'meiduo_mall_37'  # 数据库名字
+        'NAME': 'meiduo_mall'  # 数据库名字
 
     }
 }
@@ -337,9 +339,9 @@ CKEDITOR_UPLOAD_PATH = ''  # 上传图片保存路径，使用了FastDFS，所�
 
 
 # django文件存储
-DEFAULT_FILE_STORAGE = 'utils.fastdfs.fdfsstorage.MyStorage'
+DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FastDFSStorage'
 # FastDFS
-FDFS_URL = 'http://192.168.229.148:8888/'  # 访问图片的路径域名 ip地址修改为自己机器的ip地址
+FDFS_URL = 'http://192.168.12.57:8888/'  # 访问图片的路径域名 ip地址修改为自己机器的ip地址
 FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 

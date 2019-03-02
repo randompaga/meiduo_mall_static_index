@@ -31,3 +31,9 @@ from django.shortcuts import render
 
 
 """
+
+# from fdfs_client.client import Fdfs_client
+# client = Fdfs_client('utils/fastdfs/client.conf')
+# client.upload_appender_by_file('/home/python/Desktop/images/timg.jpg')
+
+
