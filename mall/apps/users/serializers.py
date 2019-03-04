@@ -277,22 +277,59 @@ class AddressSerializer(serializers.ModelSerializer):
         # pass
 
 ######################################################
+#
+# from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+# from mall import settings
+#
+# # 1. 创建序列化器
+# s = Serializer(secret_key=settings.SECRET_KEY,expires_in=300)
+#
+# #2.组织数据
+# data = {
+#     'id':10,
+#     'email':'qi_rui_hua@163.com'
+# }
+#
+# #3.对数据进行加密
+# token = s.dumps(data)
+#
+#
+#
+# s.loads(token)
 
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from mall import settings
 
-# 1. 创建序列化器
-s = Serializer(secret_key=settings.SECRET_KEY,expires_in=300)
+from goods.models import SKU
+from django_redis import get_redis_connection
 
-#2.组织数据
-data = {
-    'id':10,
-    'email':'qi_rui_hua@163.com'
-}
+class AddUserBrowsingHistorySerializer(serializers.Serializer):
+    """
+    添加用户浏览记录序列化器
+    """
+    sku_id = serializers.IntegerField(label='商品编号',min_value=1,required=True)
 
-#3.对数据进行加密
-token = s.dumps(data)
+    def validate_sku_id(self,value):
+        """
+        检查商品是否存在
+        """
+        try:
+            SKU.objects.get(pk=value)
+        except SKU.DoesNotExist:
+            raise serializers.ValidationError('商品不存在')
 
+        return value
 
+    def create(self, validated_data):
 
-s.loads(token)
+        #获取用户信息
+        user_id = self.context['request'].user.id
+        #获取商品id
+        sku_id = validated_data['sku_id']
+        #连接redis
+        redis_conn = get_redis_connection('history')
+        #移除已经存在的本记录
+        redis_conn.lrem('history_%s'%user_id,0,sku_id)
+        #添加新的记录
+        redis_conn.lpush('history_%s'%user_id,sku_id)
+        #保存最多5条记录
+        redis_conn.ltrim('history_%s'%user_id,0,4)
+        return validated_data

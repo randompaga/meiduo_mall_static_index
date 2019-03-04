@@ -400,6 +400,28 @@ class UserAddressAPIView(APIView):
         return Response(serializer.data)
 
 
+from rest_framework import mixins
+from rest_framework.generics import GenericAPIView
+from .serializers import  AddUserBrowsingHistorySerializer
+from rest_framework.permissions import IsAuthenticated
+
+class UserBrowsingHistoryView(mixins.CreateModelMixin, GenericAPIView):
+    """
+    用户浏览历史记录
+    POST /users/browerhistories/
+    GET  /users/browerhistories/
+    数据只需要保存到redis中
+    """
+    serializer_class = AddUserBrowsingHistorySerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """
+        保存
+        """
+        return self.create(request)
+
+
 
 
 

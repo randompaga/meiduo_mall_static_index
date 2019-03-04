@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
 
     'django_crontab',  # 定时任务
+    'haystack', #搜索
 ]
 
 # 定时任务
@@ -94,7 +95,7 @@ CRONJOBS = [
     # 参数三: 日志路径 (注意: 日志路径中 不能出现 中间缺少文件夹的情况)
         # 日志路径错误,也会造成定时任务失败
     # 每1分钟执行一次生成主页静态文件
-    ('*/1 * * * *', 'contents.crons.generate_static_index_html', '>> /home/python/Desktop/meiduo_37/mall/logs/crontab.log'),
+    ('*/1 * * * *', 'contents.crons.generate_static_index_html', '>> /home/python/Desktop/meiduo_mall_static_index/mall/logs/crontab.log'),
 
 ]
 
@@ -211,7 +212,15 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
-    }
+    },
+    "history": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
@@ -269,6 +278,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'utils.pagination.StandardResultsSetPagination',
+
 }
 
 # 替换系统的User,让系统的User也使用我们的模型类
@@ -341,10 +352,22 @@ CKEDITOR_UPLOAD_PATH = ''  # 上传图片保存路径，使用了FastDFS，所�
 # django文件存储
 DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FastDFSStorage'
 # FastDFS
-FDFS_URL = 'http://192.168.12.57:8888/'  # 访问图片的路径域名 ip地址修改为自己机器的ip地址
+FDFS_URL = 'http://192.168.12.80:8888/'  # 访问图片的路径域名 ip地址修改为自己机器的ip地址
 FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
 
 # 生成的静态html文件保存目录
 GENERATED_STATIC_HTML_FILES_DIR = os.path.join(os.path.dirname(BASE_DIR), 'front')
 
+
+# Haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://192.168.12.80:9200/',  # 此处为elasticsearch运行的服务器ip地址，端口号固定为9200
+        'INDEX_NAME': 'meiduo',  # 指定elasticsearch建立的索引库的名称
+    },
+}
+
+# 当添加、修改、删除数据时，自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
