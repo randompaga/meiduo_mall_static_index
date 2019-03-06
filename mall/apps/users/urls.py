@@ -22,7 +22,11 @@ urlpatterns = [
     url(r'^emails/verification/$',views.UserEmailVerificationAPIView.as_view()),
 
     url(r'^addresses/$',views.UserAddressAPIView.as_view()),
+ url(r'^addresses/(?P<id>\d+)/$',views.UserChangeAddressAPIView.as_view()),
+    url(r'^addresses/(?P<id>\d+)/title/$',views.UserAddressTitleAPIView.as_view()),
+    url(r'^addresses/(?P<id>\d+)/status/$',views.UserDefaultAddressAPIView.as_view()),
     url(r'^browerhistories/$', views.UserBrowsingHistoryView.as_view()),
+
 
 ]
 

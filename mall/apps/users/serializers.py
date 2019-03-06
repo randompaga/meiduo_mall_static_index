@@ -276,6 +276,14 @@ class AddressSerializer(serializers.ModelSerializer):
         # print('aaa')
         # pass
 
+class UserAddressTitleSerializer(serializers.ModelSerializer):
+
+    title = serializers.CharField(required=True)
+
+    class Meta:
+        model = Address
+        fields = ["title"]
+
 ######################################################
 #
 # from itsdangerous import TimedJSONWebSignatureSerializer as Serializer

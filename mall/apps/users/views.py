@@ -1,14 +1,17 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django_redis import get_redis_connection
 from rest_framework.response import Response
 
 # from mall.apps.users.models import User       错误的
 
 # from apps.users.models import User            错误
-
-from users.models import User
-from users.serializers import RegisterUserSerializer, UserCenterInfoSerializer, UserEmailSerializer, AddressSerializer
+from goods.models import SKU
+from goods.serializers import SKUSerializer
+from users.models import User, Address
+from users.serializers import RegisterUserSerializer, UserCenterInfoSerializer, UserEmailSerializer, AddressSerializer, \
+    UserAddressTitleSerializer
 
 """
 一.分析需求
@@ -340,49 +343,6 @@ class UserEmailVerificationAPIView(APIView):
         # 5. 返回相应
         return Response({'msg':'ok'})
 
-
-
-################################地址管理########################################
-
-"""
-新增地址
-
-一.分析需求
-   当用户点击保存地址按钮的时候,让前端收集 地址,省,市,区,联系人,邮箱,固定电话,详细地址,手机号
-    提交给后端
-    token 也就是用户信息,在请求头中提交
-
-二.步骤(大概的思路)
-
-   1.只有登陆用户才可以访问
-
-   2.接收数据
-   3.校验数据
-   4.数据入库
-   5.返回相应
-
-三.确定请求方式和路由
-
-   POST     users/addresses/
-
-四.选取哪个视图(结合需求,使用排除法)
-    APIView                         :基类
-    GenericAPIView                  :对列表视图和详情视图做了通用支持,一般和mixin配合使用
-    CreateAPIView                    : 连http请求方法都不用写
-五.编码
-
-"""
-# from rest_framework.generics import CreateAPIView
-# class UserAddressAPIView(CreateAPIView):
-#
-#     permission_classes = [IsAuthenticated]
-#
-#     serializer_class = AddressSerializer
-
-
-    # AddressSerializer(instance=,)
-
-
 class UserAddressAPIView(APIView):
     # 1.只有登陆用户才可以访问
     permission_classes = [IsAuthenticated]
@@ -400,6 +360,68 @@ class UserAddressAPIView(APIView):
         return Response(serializer.data)
 
 
+    def get(self,request):
+        user = request.user
+        addresses = Address.objects.filter(is_deleted=False)
+        serializer = AddressSerializer(addresses, many=True)
+        return Response({
+            "user_id": user.id,
+            "limit": 20,
+            "default_address_id": user.default_address_id,
+            "addresses": serializer.data
+        })
+
+
+class UserChangeAddressAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def delete(self,reuqest,id):
+
+        address = Address.objects.filter(id=id).first()
+        address.is_deleted = True
+        address.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self,request,id):
+
+        data = request.data
+        address = Address.objects.get(id=id)
+        serializer = AddressSerializer(instance=address,data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+class UserAddressTitleAPIView(APIView):
+
+    def put(self,request,id):
+
+        address = Address.objects.get(id=id)
+        serializer = UserAddressTitleSerializer(instance=address)
+
+        return Response(serializer.data)
+
+
+
+
+class UserDefaultAddressAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def put(self,request,id):
+
+        address = Address.objects.get(id=id)
+
+
+        request.user.default_address = address
+        request.user.save()
+
+        return Response({"message":"ok"})
+
+
+
 from rest_framework import mixins
 from rest_framework.generics import GenericAPIView
 from .serializers import  AddUserBrowsingHistorySerializer
@@ -415,11 +437,29 @@ class UserBrowsingHistoryView(mixins.CreateModelMixin, GenericAPIView):
     serializer_class = AddUserBrowsingHistorySerializer
     permission_classes = [IsAuthenticated]
 
+
+
     def post(self, request):
-        """
-        保存
-        """
+        """保存"""
         return self.create(request)
+
+    def get(self,request):
+        """获取"""
+        #获取用户信息
+        user_id = request.user.id
+        #连接redis
+        redis_conn =  get_redis_connection('history')
+        #获取数据
+        history_sku_ids = redis_conn.lrange('history_%s'%user_id,0,5)
+        skus = []
+        for sku_id in history_sku_ids:
+            sku = SKU.objects.get(pk=sku_id)
+            skus.append(sku)
+        #序列化
+        serializer = SKUSerializer(skus,many=True)
+        return Response(serializer.data)
+
+        # return Response(serializer.data,safe=False)
 
 
 
