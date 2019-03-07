@@ -1,7 +1,6 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django_redis import get_redis_connection
 from rest_framework.response import Response
 
 # from mall.apps.users.models import User       错误的
@@ -460,6 +459,19 @@ class UserBrowsingHistoryView(mixins.CreateModelMixin, GenericAPIView):
         return Response(serializer.data)
 
         # return Response(serializer.data,safe=False)
+
+from django_redis import get_redis_connection
+from rest_framework_jwt.views import ObtainJSONWebToken
+from carts.utils import merge_cart_cookie_to_redis
+
+class UserAuthorizationView(ObtainJSONWebToken):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request)
+        serilizer = self.get_serializer(data=request.data)
+        if serilizer.is_valid():
+            user = serilizer.validated_data.get("user")
+            response = merge_cart_cookie_to_redis(request,user,response)
+        return response
 
 
 
