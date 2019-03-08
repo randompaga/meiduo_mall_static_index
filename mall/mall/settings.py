@@ -78,6 +78,10 @@ INSTALLED_APPS = [
     'oauth.apps.OauthConfig',
     'areas.apps.AreasConfig',
     'goods.apps.GoodsConfig',
+    'carts.apps.CartsConfig',
+    'orders.apps.OrdersConfig',
+    'pay.apps.PayConfig',
+    'verifications.apps.VerificationsConfig',
     'contents.apps.ContentsConfig',
     # 只要使用模型就需要注册子应用
     'ckeditor',

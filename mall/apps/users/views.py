@@ -462,18 +462,33 @@ class UserBrowsingHistoryView(mixins.CreateModelMixin, GenericAPIView):
 
 from django_redis import get_redis_connection
 from rest_framework_jwt.views import ObtainJSONWebToken
-from carts.utils import merge_cart_cookie_to_redis
+from carts.utils import merge_cookie_to_redis
+
+# class UserAuthorizationView(ObtainJSONWebToken):
+    # def post(self, request):
+    #     response = super().post(request)
+    #     serializer = self.get_serializer(data=request.data)
+    #     if serializer.is_valid():
+    #         user = serializer.validated_data.get("user")
+    #         response = merge_cart_cookie_to_redis(request,user,response)
+    #     return response
+
+from rest_framework_jwt.views import ObtainJSONWebToken
+from carts.utils import merge_cookie_to_redis
 
 class UserAuthorizationView(ObtainJSONWebToken):
-    def post(self, request, *args, **kwargs):
+
+    def post(self, request):
+        # 调用jwt扩展的方法，对用户登录的数据进行验证
         response = super().post(request)
-        serilizer = self.get_serializer(data=request.data)
-        if serilizer.is_valid():
-            user = serilizer.validated_data.get("user")
-            response = merge_cart_cookie_to_redis(request,user,response)
+
+        # 如果用户登录成功，进行购物车数据合并
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            # 表示用户登录成功
+            user = serializer.validated_data.get("user")
+            # 合并购物车
+            #merge_cart_cookie_to_redis(request, user, response)
+            response = merge_cookie_to_redis(request, user, response)
+
         return response
-
-
-
-
-
