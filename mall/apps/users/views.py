@@ -344,6 +344,7 @@ class UserEmailVerificationAPIView(APIView):
 
 class UserAddressAPIView(APIView):
     # 1.只有登陆用户才可以访问
+
     permission_classes = [IsAuthenticated]
     def post(self,request):
         #
@@ -435,7 +436,7 @@ class UserBrowsingHistoryView(mixins.CreateModelMixin, GenericAPIView):
     """
     serializer_class = AddUserBrowsingHistorySerializer
     permission_classes = [IsAuthenticated]
-
+    pagination_class = None
 
 
     def post(self, request):
@@ -464,15 +465,15 @@ from django_redis import get_redis_connection
 from rest_framework_jwt.views import ObtainJSONWebToken
 from carts.utils import merge_cookie_to_redis
 
-# class UserAuthorizationView(ObtainJSONWebToken):
-    # def post(self, request):
-    #     response = super().post(request)
-    #     serializer = self.get_serializer(data=request.data)
-    #     if serializer.is_valid():
-    #         user = serializer.validated_data.get("user")
-    #         response = merge_cart_cookie_to_redis(request,user,response)
-    #     return response
-
+class UserAuthorizationView(ObtainJSONWebToken):
+    def post(self, request):
+        response = super().post(request)
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data.get("user")
+            response = merge_cookie_to_redis(request,user,response)
+        return response
+'''
 from rest_framework_jwt.views import ObtainJSONWebToken
 from carts.utils import merge_cookie_to_redis
 
@@ -492,3 +493,4 @@ class UserAuthorizationView(ObtainJSONWebToken):
             response = merge_cookie_to_redis(request, user, response)
 
         return response
+'''

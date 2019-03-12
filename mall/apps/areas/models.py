@@ -5,8 +5,8 @@ class Area(models.Model):
     #id 默认生成的
     name = models.CharField(max_length=20, verbose_name='名称')
     # related_name 修改 关联的模型的数据的属性值 默认是: 关联模型类名小写_set
-    # parent = models.ForeignKey('self', on_delete=models.SET_NULL,null=True,related_name='subs', blank=True, verbose_name='上级行政区划')
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL,null=True, blank=True, verbose_name='上级行政区划')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL,null=True,related_name='subs', blank=True, verbose_name='上级行政区划')
+    # parent = models.ForeignKey('self', on_delete=models.SET_NULL,null=True, blank=True, verbose_name='上级行政区划')
     # area_set = [市id,市id]
     # subs = [市id,市id]
     class Meta:

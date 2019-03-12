@@ -69,27 +69,27 @@ select * from tb_areas where parent_id=130600;
 
 """
 
-class ProvienceAPIView(APIView):
-    # 获取省的信息
-    def get(self,request):
+# class ProvienceAPIView(APIView):
+#     # 获取省的信息
+#     def get(self,request):
+#
+#         areas = Area.objects.filter(parent=None)
+#         # [Area,Area,Area,Area]
+#
+#         serializer = AreaSerializer(areas,many=True)
+#
+#         return Response(serializer.data)
 
-        areas = Area.objects.filter(parent=None)
-        # [Area,Area,Area,Area]
-
-        serializer = AreaSerializer(areas,many=True)
-
-        return Response(serializer.data)
-
-
-class DistrictAPIView(APIView):
-    #获取市/区县信息
-    def get(self,request,id):
-
-        areas = Area.objects.filter(parent_id=id)
-
-        serializer = AreaSerializer(areas,many=True)
-
-        return Response(serializer.data)
+#
+# class DistrictAPIView(APIView):
+#     #获取市/区县信息
+#     def get(self,request,id):
+#
+#         areas = Area.objects.filter(parent_id=id)
+#
+#         serializer = AreaSerializer(areas,many=True)
+#
+#         return Response(serializer.data)
 
 
 
@@ -107,6 +107,7 @@ class AreaModelViewSet(CacheResponseMixin,ReadOnlyModelViewSet):
     # queryset = Area.objects.all()
 
     # 当我们的需求不同时,可以根据需求返回不同的查询结果集
+    pagination_class = None
     def get_queryset(self):
         # self 是视图集
         # 视图集有一个属性 action

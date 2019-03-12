@@ -1,10 +1,10 @@
-'''
+
 import base64
 import pickle
 
 from django_redis import get_redis_connection
 
-def merge_cart_cookie_to_redis(request,user,response):
+def merge_cookie_to_redis(request,user,response):
     cookie_str = request.COOKIES.get('cart')
     if cookie_str is not None:
         cookie_cart = pickle.loads(base64.b64decode(cookie_str.encode()))
@@ -124,3 +124,4 @@ def merge_cookie_to_redis(request,user,response):
         return response
 
     return response
+'''

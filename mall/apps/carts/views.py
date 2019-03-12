@@ -145,9 +145,9 @@ class CartAPIView(APIView):
             user = None
         if user is not None and user.is_authenticated:
             redis_conn = get_redis_connection('cart')
-            redis_cart = redis_conn.hdel('cart_%s'%user.id,sku_id)
+            redis_conn.hdel('cart_%s'%user.id,sku_id)
             # 当点击删除的时候，到redis_cart中把相应的商品id 给删了
-            redis_cart = redis_conn.srem('cart_selected_%s'%user.id,sku_id)
+            redis_conn.srem('cart_selected_%s'%user.id,sku_id)
             return Response(serializer.data)
 
         else:
@@ -163,7 +163,7 @@ class CartAPIView(APIView):
             if sku_id in cart:
                 del cart[sku_id]
                 cookie_str = base64.b64encode(pickle.dumps(cart)).decode()
-                response.set_cookie('cart',cookie_str)
+                response.set_cookie('cart',cookie_str,3600)
 
             return response
 

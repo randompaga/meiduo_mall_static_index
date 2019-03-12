@@ -70,7 +70,7 @@ var vm = new Vue({
                         responseType: 'json'
                     })
                     .then(response => {
-                        this.cities = response.data.area_set;
+                        this.cities = response.data.subs;
                     })
                     .catch(error => {
                         console.log(error.response.data);
@@ -84,7 +84,7 @@ var vm = new Vue({
                         responseType: 'json'
                     })
                     .then(response => {
-                        this.districts = response.data.area_set;
+                        this.districts = response.data.subs;
                     })
                     .catch(error => {
                         console.log(error.response.data);

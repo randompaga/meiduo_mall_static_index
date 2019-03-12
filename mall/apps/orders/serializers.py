@@ -51,7 +51,8 @@ class OrderCommitSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """保存订单"""
         user = self.context['request'].user
-        order_id = timezone.now().strftime('%Y%M%D%H%M%S')+('%09d'%user.id)
+        order_id = timezone.now().strftime('%Y%m%d%H%M%S')+('%09d'%user.id)
+
         address = validated_data['address']
         pay_method = validated_data['pay_method']
         # 这一堆啥玩意？

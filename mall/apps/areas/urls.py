@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .views import ProvienceAPIView,DistrictAPIView,AreaModelViewSet
+from .views import AreaModelViewSet
 
 
 urlpatterns = [

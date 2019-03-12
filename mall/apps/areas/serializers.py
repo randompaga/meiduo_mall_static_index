@@ -19,11 +19,11 @@ class SubsAreaSerializer(serializers.ModelSerializer):
     # area_set = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
     # [1,2,3,4,5]
 
-    area_set = AreaSerializer(many=True,read_only=True)
+    subs = AreaSerializer(many=True,read_only=True)
     # subs = AreaSerializer(many=True,read_only=True)
 
 
     class Meta:
         model = Area
         # fields = ['subs','id','name']
-        fields = ['area_set','id','name']
+        fields = ['subs','id','name']
